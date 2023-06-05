@@ -1,14 +1,9 @@
 import { ListaNegociacoes } from "../models/lista-negociacoes.js"
+import { View } from "./view.js"
 
-export class NegociacoesView{
+export class NegociacoesView extends View<ListaNegociacoes> {
 
-  private elemento: HTMLElement
-
-  constructor(seletor: string) {
-    this.elemento = document.querySelector(seletor)
-  }
-
-  template(model: ListaNegociacoes): string {
+  template(modelo: ListaNegociacoes): string {
     return `
     <table class="table table-hover table-bordered">
       <thead>
@@ -20,7 +15,7 @@ export class NegociacoesView{
       </thead>
 
       <tbody>
-        ${model.lista().map(negociacao => {
+        ${modelo.lista().map(negociacao => {
           return `
           <tr>
             <td>${negociacao.data.toLocaleDateString()}</td>
