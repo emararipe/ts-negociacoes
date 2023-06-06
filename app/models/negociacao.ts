@@ -1,7 +1,7 @@
 export class Negociacao {
 
   constructor(
-    private _data: Date, // atributos privados
+    private _data: Date, 
     public readonly quantidade: number,
     public readonly valor: number
   ){
@@ -14,6 +14,19 @@ export class Negociacao {
   get data(): Date {
     const data = new Date(this._data.getTime())
     return data
+  }
+
+  static criaDe(quantidadeTemp: string, valorTemp: string, dataTemp: string): Negociacao{
+    const quantidade = parseInt(quantidadeTemp)
+    const valor = parseFloat(valorTemp)
+    const exp = /-/g
+    const data = new Date(dataTemp.replace(exp, ','))
+
+    return new Negociacao (
+      data,
+      quantidade,
+      valor
+    )
   }
 }
 
