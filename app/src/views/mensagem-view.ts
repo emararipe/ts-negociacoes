@@ -8,9 +8,5 @@ export class MensagemView extends View<string> {
     `
   }
 
-  update(modelo: string): void{
-    this.elemento.innerHTML = this.template(modelo)
-  }
-
 }
 

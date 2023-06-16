@@ -3,6 +3,9 @@ import { Negociacao } from "../models/negociacao.js"
 import { MensagemView } from "../views/mensagem-view.js"
 import { NegociacoesView } from "../views/negociacoes-view.js"
 import { DiasDaSemana } from "../enums/dias-semana.js"
+import { logarTempoExecucao } from "../decorators/logar-tempo-execucao.js"
+import { inspecionar } from "../decorators/inspecionar.js"
+import { escapar } from "../decorators/escapar.js"
 
 
 export class NegociacaoController{
@@ -10,8 +13,8 @@ export class NegociacaoController{
   private inputQuantidade: HTMLInputElement
   private inputValor: HTMLInputElement
   private negociacoes = new ListaNegociacoes()
-  private negociacoesView = new NegociacoesView('#negociacoesView', true)
-  private mensagemView = new MensagemView('#mensagemView', true)
+  private negociacoesView = new NegociacoesView('#negociacoesView')
+  private mensagemView = new MensagemView('#mensagemView')
   
   constructor(){
     this.inputData = document.querySelector('#data') as HTMLInputElement
@@ -21,6 +24,8 @@ export class NegociacaoController{
     
   }
 
+  
+  @logarTempoExecucao(true)
   adiciona(): void {
     const quantidade = this.inputQuantidade.value
     const valor = this.inputValor.value
@@ -35,6 +40,20 @@ export class NegociacaoController{
     this.negociacoes.adiciona(negociacao)
     this.atualizaView()
     this.limpaFormulario()
+  }
+
+  importaDados(): void {
+    fetch('http://localhost:8080/dados')
+    .then( res => res.json())
+    .then((dados: any[]) => {
+      return dados.map(dado => new Negociacao(new Date(), dado.vezes, dado.montante))  
+    })
+    .then(negociacoesHoje => {
+      for(let negociacao of negociacoesHoje){
+        this.negociacoes.adiciona(negociacao)
+      }
+      this.negociacoesView.update(this.negociacoes)
+    })
   }
 
   private ehDiautil(data: Date){
