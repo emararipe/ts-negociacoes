@@ -4,7 +4,7 @@ export function escapar(target, propertyKey, descriptor) {
         let retorno = metodoOriginal.apply(this, args);
         const exp = /<script>[\s\S]*?<\/script>/;
         console.log(`Escape em ação no método ${propertyKey} da classe ${this.constructor.name} `);
-        if (retorno === 'string') {
+        if (typeof retorno === 'string') {
             retorno = retorno.replace(exp, '');
             return retorno;
         }
