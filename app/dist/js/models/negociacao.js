@@ -18,4 +18,11 @@ export class Negociacao {
         const data = new Date(dataTemp.replace(exp, ','));
         return new Negociacao(data, quantidade, valor);
     }
+    paraTexto() {
+        return `
+      Data:${this.data},
+      Quanidade: ${this.quantidade},
+      Valor: ${this.valor}
+    `;
+    }
 }

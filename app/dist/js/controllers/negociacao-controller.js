@@ -10,11 +10,13 @@ import { MensagemView } from "../views/mensagem-view.js";
 import { NegociacoesView } from "../views/negociacoes-view.js";
 import { DiasDaSemana } from "../enums/dias-semana.js";
 import { logarTempoExecucao } from "../decorators/logar-tempo-execucao.js";
+import { NegociacoesService } from "../services/negociacoes-service.js";
 export class NegociacaoController {
     constructor() {
         this.negociacoes = new ListaNegociacoes();
         this.negociacoesView = new NegociacoesView('#negociacoesView');
         this.mensagemView = new MensagemView('#mensagemView');
+        this.negociacoesService = new NegociacoesService();
         this.inputData = document.querySelector('#data');
         this.inputQuantidade = document.querySelector('#quantidade');
         this.inputValor = document.querySelector('#valor');
@@ -34,11 +36,7 @@ export class NegociacaoController {
         this.limpaFormulario();
     }
     importaDados() {
-        fetch('http://localhost:8080/dados')
-            .then(res => res.json())
-            .then((dados) => {
-            return dados.map(dado => new Negociacao(new Date(), dado.vezes, dado.montante));
-        })
+        this.negociacoesService.obterNegociacoes()
             .then(negociacoesHoje => {
             for (let negociacao of negociacoesHoje) {
                 this.negociacoes.adiciona(negociacao);

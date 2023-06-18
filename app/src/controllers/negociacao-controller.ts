@@ -6,6 +6,7 @@ import { DiasDaSemana } from "../enums/dias-semana.js"
 import { logarTempoExecucao } from "../decorators/logar-tempo-execucao.js"
 import { inspecionar } from "../decorators/inspecionar.js"
 import { escapar } from "../decorators/escapar.js"
+import { NegociacoesService } from "../services/negociacoes-service.js"
 
 
 export class NegociacaoController{
@@ -15,13 +16,14 @@ export class NegociacaoController{
   private negociacoes = new ListaNegociacoes()
   private negociacoesView = new NegociacoesView('#negociacoesView')
   private mensagemView = new MensagemView('#mensagemView')
+  private negociacoesService = new NegociacoesService()
   
   constructor(){
     this.inputData = document.querySelector('#data') as HTMLInputElement
     this.inputQuantidade = document.querySelector('#quantidade') as HTMLInputElement
     this.inputValor = document.querySelector('#valor') as HTMLInputElement
     this.negociacoesView.update(this.negociacoes)
-    
+      
   }
 
   
@@ -43,10 +45,11 @@ export class NegociacaoController{
   }
 
   importaDados(): void {
-    fetch('http://localhost:8080/dados')
-    .then( res => res.json())
-    .then((dados: any[]) => {
-      return dados.map(dado => new Negociacao(new Date(), dado.vezes, dado.montante))  
+    this.negociacoesService.obterNegociacoes()
+    .then(negociacoesHoje => {
+        return negociacoesHoje.filter(negociacaoHoje => {
+          return !this.negociacoes.lista().some(negociacao => negociacao.ehIgual(negociacaoHoje))
+        })
     })
     .then(negociacoesHoje => {
       for(let negociacao of negociacoesHoje){
